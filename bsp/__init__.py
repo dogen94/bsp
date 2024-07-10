@@ -11,7 +11,7 @@ import scipy.special as scisp
 import scipy.stats as scist
 import scipy.interpolate as scint
 import matplotlib.pyplot as plt
-
+from scipy.io import loadmat, savemat
 
 
 class GaussianKde(scist.gaussian_kde):
@@ -794,20 +794,21 @@ class Bsp(object):
     # Write a mat file of partitions
     def write_mat(self, fname):
         # Read mat into db
+        db = loadmat(fname)
         # db = rdb.DataKit()
         cols = ["domains", "counts", "masks", "volumes",
                 "pscore_hist", "c_probs", "prev_domain_cut"]
         # For each needed column
         for col in cols:
             # Save col to blank db
-            db.save_col(col, self.__getattribute__(col))
+            db.update(col, self.__getattribute__(col))
         # Write mat file of db
-        db.write_mat(fname)
+        savemat(fname, db)
 
     # Read from a mat file of partitions
     def read_mat(self, fname, run_prep=False):
         # Read mat into db
-        # db = rdb.DataKit(fname)
+        db = loadmat(fname)
         cols = ["domains", "counts", "masks", "volumes",
                 "pscore_hist", "c_probs", "prev_domain_cut"]
         # For each needed column
